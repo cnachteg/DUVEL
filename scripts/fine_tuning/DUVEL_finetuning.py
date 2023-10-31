@@ -32,32 +32,41 @@ np.random.seed(42)
 torch.manual_seed(42)
 torch.cuda.manual_seed_all(42)
 
-def compute_metrics_fn(eval_preds):
-    logits, labels = eval_preds
-    predictions = np.argmax(logits, axis=-1)
-    recall = evaluate.load('recall')
-    precision = evaluate.load('precision')
-    f1 = evaluate.load('f1')
-    wandb.log({
-        'recall': recall.compute(predictions=predictions, references=labels)['recall'],
-        'precision':precision.compute(predictions=predictions, references=labels)['precision'],
-        'f1_score':f1.compute(predictions=predictions, references=labels)['f1']
-    })
-    return {
-        'recall': recall.compute(predictions=predictions, references=labels)['recall'],
-        'precision':precision.compute(predictions=predictions, references=labels)['precision'],
-        'f1_score':f1.compute(predictions=predictions, references=labels)['f1']
-    }
-
 def train(config=None):
-    with wandb.init(config=config):
+    with wandb.init(config=config, project='DUVEL_finetune'):
         
-        # set sweep configuration
+        # set configuration
         config = wandb.config
         tokenizer = AutoTokenizer.from_pretrained(config.model_name) # use_fast=True)
         dataset = load_dataset("cnachteg/duvel",use_auth_token=True)
         train_dataset = dataset['train']
-        eval_dataset = dataset['validation']
+        test_dataset = dataset['test']
+
+        table = wandb.Table(
+            columns = ['id', 'sentence', 'prediction', 'ground_truth']
+        )
+
+        def compute_metrics_fn(eval_preds):
+            logits, labels, inputs = eval_preds
+            predictions = np.argmax(logits, axis=-1)
+            recall = evaluate.load('recall')
+            precision = evaluate.load('precision')
+            f1 = evaluate.load('f1')
+            wandb.log({
+                'recall': recall.compute(predictions=predictions, references=labels)['recall'],
+                'precision':precision.compute(predictions=predictions, references=labels)['precision'],
+                'f1_score':f1.compute(predictions=predictions, references=labels)['f1']
+                })
+            _id = 0
+            for pred, label, inp in zip(predictions, labels, inputs):
+                sentence = tokenizer.decode(inp)
+                table.add(_id, sentence, pred, label)
+                _id += 1
+            return {
+                'recall': recall.compute(predictions=predictions, references=labels)['recall'],
+                'precision':precision.compute(predictions=predictions, references=labels)['precision'],
+                'f1_score':f1.compute(predictions=predictions, references=labels)['f1']
+                }
         
         def model_init():
             return AutoModelForSequenceClassification.from_pretrained(config.model_name, num_labels=2)
@@ -79,16 +88,16 @@ def train(config=None):
             batched=True,
             remove_columns=['sentence', 'pmcid', 'gene1', 'gene2', 'variant1', 'variant2', 'label']
         )
-        processed_dataset_eval = eval_dataset.map(
-                collate_fn,
-                batched=True,
-                remove_columns=['sentence', 'pmcid', 'gene1', 'gene2', 'variant1', 'variant2', 'label']
-            )
+        processed_dataset_test = test_dataset.map(
+            collate_fn, 
+            batched=True,
+            remove_columns=['sentence', 'pmcid', 'gene1', 'gene2', 'variant1', 'variant2', 'label']
+        )
 
 
         # set training arguments
         training_args = TrainingArguments(
-            run_name=f'batch-{config.batch_size}_lr-{config.learning_rate}_epochs-{config.epochs}',
+            run_name='fine_tune_PubMedBERT',
             output_dir='DUVEL_finetune',
             report_to='wandb',  # Turn on Weights & Biases logging
             num_train_epochs=config.epochs,
@@ -97,14 +106,18 @@ def train(config=None):
             warmup_ratio=config.warmup_ratio,
             per_device_train_batch_size=config.batch_size,
             per_device_eval_batch_size=8,
-            save_strategy='no',
+            save_strategy='epoch',
             evaluation_strategy='epoch',
             logging_strategy='epoch',
-            remove_unused_columns=False,
+            remove_unused_columns=True,
+            load_best_model_at_end=True,
+            metric_for_best_model='f1_score',
+            greater_is_better=True,
+            include_inputs_for_metrics=True,
             seed=42,
             do_predict=True,
             do_train=True,
-            do_eval=True
+            do_eval=False
         )
 
 
@@ -114,60 +127,36 @@ def train(config=None):
             args=training_args,
             data_collator=DefaultDataCollator(),
             train_dataset=processed_dataset_train,
-            eval_dataset=processed_dataset_eval,
+            eval_dataset=processed_dataset_test,
             compute_metrics=compute_metrics_fn
         )
         
         try:
             # start training loop
             trainer.train()
+            wandb.log(table)
         except:
-            del trainer, tokenizer, training_args, dataset, processed_dataset_train, processed_dataset_eval
+            del trainer, tokenizer, training_args, dataset, processed_dataset_train, processed_dataset_test
         
             gc.collect()
             torch.cuda.empty_cache()
         
-        del trainer, tokenizer, training_args, dataset, processed_dataset_train, processed_dataset_eval
+        del trainer, tokenizer, training_args, dataset, processed_dataset_train, processed_dataset_test
         
         gc.collect()
         torch.cuda.empty_cache()
 
 if __name__ == "__main__":
-    sweep_config = {
-    'method': 'grid', 
-    'metric': {  # This is the metric we are interested in maximizing
-      'name': 'f1_score',
-      'goal': 'maximize'   
-    },
-    # Paramaters and parameter values we are sweeping across
-    'parameters': {
-        'model_name': {
-            #'values': ['michiyasunaga/BioLinkBERT-large']
-            #'values': ['sultan/BioM-BERT-PubMed-PMC-Large']
-            'values':['microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext']
-            #'values': [
-            #    'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext',
-            #    'michiyasunaga/BioLinkBERT-large',
-            #    'sultan/BioM-BERT-PubMed-PMC-Large'
-            #    ]
-        },
-        'learning_rate': {
-            'values': [1e-5, 2e-5, 3e-5, 5e-5, 7e-5]
-        },
-        'batch_size': {
-            'values':[4]
-        },
-        'epochs':{
-            'values': [3, 5, 10]
-        },
-        'warmup_ratio':{
-            'values': [0.1, 0.5]
-        },
-        'weight_decay':{
-            'values' : [0]
-         }
-    }
-}
+    config = {
+        'batch_size': 4,
+        #'model_name': 'michiyasunaga/BioLinkBERT-large',
+        #'model_name': 'sultan/BioM-BERT-PubMed-PMC-Large',
+        'model_name': 'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext',
+        'learning_rate': 1e-5,
+        #'epochs': 3,
+        'epochs' : 5,
+        'warmup_ratio' : 0.5,
+        'weight_decay': 0
 
-    sweep_id = wandb.sweep(sweep_config, project='DUVEL_finetune')
-    wandb.agent(sweep_id, train)
+}
+    train(config)
