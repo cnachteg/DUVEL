@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this dataset, please cite it as below."
+authors:
+- family-names: "Nachtegael"
+  given-names: "Charlotte"
+  orcid: "https://orcid.org/0000-0002-5034-8975"
+- family-names: "De Stefani"
+  given-names: "Jacopo"
+  orcid: "https://orcid.org/0000-0003-0257-4537"
+- family-names: "Cnudde"
+  given-names: "Anthony"
+  orcid: "https://orcid.org/0000-0001-6363-6506"
+- family-names: "Lenaerts"
+  given-names: "Tom"
+  orcid: "https://orcid.org/0000-0003-3645-1455"
+title: "DUVEL"
+version: 0.1.0-alpha
+doi: TBA
+date-released: TBA
+url: "https://github.com/cnachteg/DUVEL"
