@@ -1,4 +1,4 @@
-# DUVEL
+# DUVEL [![DOI](https://zenodo.org/badge/679553511.svg)](https://zenodo.org/doi/10.5281/zenodo.10057604)
 DUVEL stands for **D**etection of **U**nlimited **V**ariant **E**nsemble in **L**iterature.
 
 ## Construction of DUVEL
@@ -10,7 +10,7 @@ Annotation was done through the ALAMBIC (https://github.com/Trusted-AI-Labs/ALAM
 Preliminary experiments were conducted with different biomedical large language models, with hyperparameter fine-tuning. Notebooks experiments can be found in the ``scripts/fine_tuning`` folder.
 
 ## Data availibility
-Csv files of the data can be found in the ``data`` folder, corrsponding to the train/validation/test splits used for the fine-tuning in the experiments of the article.
+Csv files of the data can be found in the ``data`` folder, corresponding to the train/validation/test splits used for the fine-tuning in the experiments of the article.
 
 The train/validation/test splits of the data are also available on Huggingface (https://huggingface.co/datasets/cnachteg/DUVEL) and can be used with the following code :
 
