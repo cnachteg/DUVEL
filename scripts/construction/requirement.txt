@@ -1,0 +1,13 @@
+dill
+ipywidgets
+jupyter
+https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_core_sci_md-0.5.0.tar.gz
+numpy
+packaging==21.3
+pandarallel
+pandas==1.4.2
+seaborn
+spacy==3.2.4
+scispacy==0.5.0
+tqdm==4.64.0
+transformers
