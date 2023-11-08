@@ -151,7 +151,7 @@ if __name__ == "__main__":
         'batch_size': 4,
         #'model_name': 'michiyasunaga/BioLinkBERT-large',
         #'model_name': 'sultan/BioM-BERT-PubMed-PMC-Large',
-        'model_name': 'microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext',
+        'model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext',
         'learning_rate': 1e-5,
         #'epochs': 3,
         'epochs' : 5,
