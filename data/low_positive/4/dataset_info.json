@@ -1,0 +1,85 @@
+{
+  "builder_name": "csv",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "duvel",
+  "dataset_size": 6600577,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/cnachteg/DUVEL@973b5c4acd4d755c1b27f5b9b1c31844a28945e9/data/train.csv": {
+      "num_bytes": 5035703,
+      "checksum": null
+    },
+    "hf://datasets/cnachteg/DUVEL@973b5c4acd4d755c1b27f5b9b1c31844a28945e9/data/validation.csv": {
+      "num_bytes": 152798,
+      "checksum": null
+    },
+    "hf://datasets/cnachteg/DUVEL@973b5c4acd4d755c1b27f5b9b1c31844a28945e9/data/test.csv": {
+      "num_bytes": 1284995,
+      "checksum": null
+    }
+  },
+  "download_size": 6473496,
+  "features": {
+    "sentence": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "pmcid": {
+      "dtype": "int32",
+      "_type": "Value"
+    },
+    "gene1": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "gene2": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "variant1": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "variant2": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "label": {
+      "names": [
+        0,
+        1
+      ],
+      "_type": "ClassLabel"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 13074073,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 5134410,
+      "num_examples": 6553,
+      "dataset_name": "duvel"
+    },
+    "validation": {
+      "name": "validation",
+      "num_bytes": 155767,
+      "num_examples": 200,
+      "dataset_name": "duvel"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 1310400,
+      "num_examples": 1689,
+      "dataset_name": "duvel"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
