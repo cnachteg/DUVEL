@@ -1,4 +1,4 @@
-# DUVEL [![DOI](https://zenodo.org/badge/679553511.svg)](https://zenodo.org/doi/10.5281/zenodo.10057604)
+# DUVEL [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10410665.svg)](https://doi.org/10.5281/zenodo.10410665)
 DUVEL stands for **D**etection of **U**nlimited **V**ariant **E**nsemble in **L**iterature.
 
 ## Construction of DUVEL
