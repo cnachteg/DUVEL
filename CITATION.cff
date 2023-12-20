@@ -14,7 +14,9 @@ authors:
   given-names: "Tom"
   orcid: "https://orcid.org/0000-0003-3645-1455"
 title: "DUVEL"
-version: 0.1.0-alpha
-doi: TBA
-date-released: TBA
+version: 0.2.0-alpha
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10410665
+date-released: 2023-12-20
 url: "https://github.com/cnachteg/DUVEL"
