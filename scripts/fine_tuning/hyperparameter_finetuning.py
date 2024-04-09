@@ -144,11 +144,13 @@ if __name__ == "__main__":
         'model_name': {
             #'values': ['michiyasunaga/BioLinkBERT-large']
             #'values': ['sultan/BioM-BERT-PubMed-PMC-Large']
-            'values':['microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext']
+            #'values':['microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext'],
+            'values':['microsoft/BiomedNLP-BiomedBERT-large-uncased-abstract'],
             #'values': [
             #    'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext',
             #    'michiyasunaga/BioLinkBERT-large',
-            #    'sultan/BioM-BERT-PubMed-PMC-Large'
+            #    'sultan/BioM-BERT-PubMed-PMC-Large',
+            #    'microsoft/BiomedNLP-BiomedBERT-large-uncased-abstract',
             #    ]
         },
         'learning_rate': {
